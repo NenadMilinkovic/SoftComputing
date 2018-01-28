@@ -9,12 +9,14 @@ from keras.models import Sequential
 from keras.layers.core import Dense,Activation
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from keras.models import load_model
 
 
 def create_ann():
     ann = Sequential()
     ann.add(Dense(128, input_dim=784, activation='sigmoid'))
-    ann.add(Dense(16, activation='sigmoid'))
+    ann.add(Dense(128,activation='sigmoid'))
+    ann.add(Dense(52, activation='sigmoid'))
     return ann
 
 
@@ -29,8 +31,8 @@ def train_ann(ann, X_train, y_train):
     print ("Pocelo obucavanje")
     # obucavanje neuronske mreze
     training=ann.fit(X_train, y_train, epochs=2000, batch_size=1, verbose=0, shuffle=False)
-    print training.history
-    print "Zavrseno"
+    print(training.history)
+    print("Zavrseno")
     return ann
 
 def load_image(path):
@@ -99,10 +101,10 @@ def select_region(image_bin):
     return  region
 
 def select_test_region(image_bin):
-    x = 830;
-    y = 55;
-    h = 295;
-    w = 150;
+    x = 1812;
+    y = 111;
+    h = 125;
+    w = 249;
     region = image_bin[y:y + h + 1, x:x + w + 1]
     region=resize_region(region)
     region=scale_to_range(region)
@@ -172,22 +174,22 @@ for card in pictures:
     numbers = select_region(img)
     testImage=[matrix_to_vector(numbers)]
     data.append(matrix_to_vector(numbers))
-print "Pokupio regione"
+print("Pokupio regione")
 te_labels=convert_output(labels)
 
-print len(data)
-print len(te_labels)
+print(len(data))
+print(len(te_labels))
 
 ann=create_ann()
-print "Mreza kreirana"
+print("Mreza kreirana")
 
-print "Mreza kreirana"
-print len(data)
-print "Ulazi"
+print("Mreza kreirana")
+print(len(data))
+print("Ulazi")
 
 ann=train_ann(ann,data,te_labels)
-ann.save('NeuralNetwork.h5')
 
+ann.save('NeuralNetwork.h5')
 img2 = invert(image_bin(image_gray(image_color1)))
 img_bin1 = erode(dilate(img2))
 region =[select_test_region(img2)]
